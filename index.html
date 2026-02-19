@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+    <link rel="stylesheet" href="./css/index.css">
+    <script src="./js/index.js" defer></script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <h1>Калькулятор by ugryum</h1>
+            </div>
+
+            <div class="header-right">
+                <a href="https://github.com/iu5git/JavaScript" target="_blank">
+                    <button class="my-btn secondary" id="github-btn">Репозиторий GitHub</button>
+                </a>
+
+                <div class="">
+                    <button class="my-btn secondary" id="theme-toggle">Включить светлую тему</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div class="main-container">
+        <select class="dropdown" id="background-select">
+            <option value="image">Фон с картинкой</option>
+            <option value="solid">Обычный фон</option>
+        </select>
+
+        <div class="calculator-container">
+            <!-- блок с экраном калькулятора, где будет выводиться результат вычислений. -->
+            <div class="result" id="result">0</div>
+
+            <!-- блок с кнопками калькулятора. -->
+            <div>
+                <!--горизонтальный ряд из четырех кнопок-->
+                <div>
+                    <button class="my-btn secondary" id="btn_op_clear">C</button>
+                    <button class="my-btn secondary" id="btn_op_sign">+/-</button>
+                    <button class="my-btn secondary" id="btn_op_percent">%</button>
+                    <button class="my-btn secondary" id="btn_op_div">/</button>
+                </div>
+
+                <div>
+                    <button class="my-btn" id="btn_digit_7">7</button>
+                    <button class="my-btn" id="btn_digit_8">8</button>
+                    <button class="my-btn" id="btn_digit_9">9</button>
+                    <button class="my-btn primary" id="btn_op_mult">x</button>
+                </div>
+
+                <div>
+                    <button class="my-btn" id="btn_digit_4">4</button>
+                    <button class="my-btn" id="btn_digit_5">5</button>
+                    <button class="my-btn" id="btn_digit_6">6</button>
+                    <button class="my-btn primary" id="btn_op_minus">-</button>
+                </div>
+
+                <div>
+                    <button class="my-btn" id="btn_digit_1">1</button>
+                    <button class="my-btn" id="btn_digit_2">2</button>
+                    <button class="my-btn" id="btn_digit_3">3</button>
+                    <button class="my-btn primary" id="btn_op_plus">+</button>
+                </div>
+
+                <div>
+                    <button class="my-btn" id="btn_digit_0">0</button>
+                    <button class="my-btn" id="btn_digit_dot">.</button>
+                    <button class="my-btn execute" id="btn_op_equal">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>ЛР выполнил разработчик Угрюмов Н.А.</p>
+        <p>
+            Цель работы:
+            <mark>Знакомство</mark> с
+            <mark>HTML</mark> и
+            <mark>CSS</mark>
+        </p>
+
+        <details>
+            <summary>Больше информации об авторе</summary>
+            <p>Угрюмов Николай Андреевич, группа ИУ5-42Б МГТУ им. Н.Э. Баумана</p>
+        </details>
+    </footer>
+</body>
+</html>
