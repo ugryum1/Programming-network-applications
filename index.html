@@ -40,13 +40,16 @@
             <div>
                 <!--горизонтальный ряд из четырех кнопок-->
                 <div>
-                    <button class="my-btn secondary" id="btn_op_clear">C</button>
+                    <button class="my-btn execute secondary" id="btn_op_clear">C</button>
+                    <button class="my-btn secondary" id="btn_op_backspace">←</button>
                     <button class="my-btn secondary" id="btn_op_sign">+/-</button>
                     <button class="my-btn secondary" id="btn_op_percent">%</button>
-                    <button class="my-btn secondary" id="btn_op_div">/</button>
+                    <button class="my-btn primary" id="btn_op_div">/</button>
                 </div>
 
                 <div>
+                    <button class="my-btn secondary" id="btn_mem_recall">MR</button>
+                    <button class="my-btn secondary" id="btn_op_pow_y">xʸ</button>
                     <button class="my-btn" id="btn_digit_7">7</button>
                     <button class="my-btn" id="btn_digit_8">8</button>
                     <button class="my-btn" id="btn_digit_9">9</button>
@@ -54,6 +57,8 @@
                 </div>
 
                 <div>
+                    <button class="my-btn secondary" id="btn_mem_plus">M+</button>
+                    <button class="my-btn secondary" id="btn_op_pow_2">x²</button>
                     <button class="my-btn" id="btn_digit_4">4</button>
                     <button class="my-btn" id="btn_digit_5">5</button>
                     <button class="my-btn" id="btn_digit_6">6</button>
@@ -61,6 +66,8 @@
                 </div>
 
                 <div>
+                    <button class="my-btn secondary" id="btn_mem_minus">M-</button>
+                    <button class="my-btn secondary" id="btn_op_sqrt">√</button>
                     <button class="my-btn" id="btn_digit_1">1</button>
                     <button class="my-btn" id="btn_digit_2">2</button>
                     <button class="my-btn" id="btn_digit_3">3</button>
@@ -68,11 +75,18 @@
                 </div>
 
                 <div>
+                    <button class="my-btn secondary" id="btn_op_x1000">1k</button>
+                    <button class="my-btn secondary" id="btn_op_fact">x!</button>
                     <button class="my-btn" id="btn_digit_0">0</button>
                     <button class="my-btn" id="btn_digit_dot">.</button>
                     <button class="my-btn execute" id="btn_op_equal">=</button>
                 </div>
             </div>
+        </div>
+
+        <div class="extra-controls">
+            <button class="color-btn" id="change-calc-color">Сменить цвет окна</button>
+            <button class="color-btn" id="change-result-color">Сменить цвет консоли</button>
         </div>
     </div>
 
