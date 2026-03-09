@@ -1,6 +1,7 @@
 import {ProductComponent} from "../../components/product/index.js";
 import {BackButtonComponent} from "../../components/back-button/index.js";
 import {MainPage} from "../main/index.js";
+import { ButtonGroupComponent } from "../../components/button-group/index.js";
 
 export class ProductPage {
     constructor(parent, id) {
@@ -9,12 +10,28 @@ export class ProductPage {
     }
 
     getData() {
-        return {
-            id: 1,
-            src: "https://i.pinimg.com/originals/c9/ea/65/c9ea654eb3a7398b1f702c758c1c4206.jpg",
-            title: `Акция ${this.id}`,
-            text: "Такой акции вы еще не видели"
-        }
+        const data = [
+            {
+                id: 1,
+                src: "static/img/1.png",
+                title: "Уличная фотография",
+                text: "Профессиональный кадр, сделанный в городском стиле."
+            },
+            {
+                id: 2,
+                src: "static/img/2.png",
+                title: "Пейзаж",
+                text: "Красота природы в объективе мастера."
+            },
+            {
+                id: 3,
+                src: "static/img/3.png",
+                title: "Макросъемка",
+                text: "Удивительные детали, невидимые невооруженным глазом."
+            }
+        ];
+
+        return data.find(item => item.id == this.id)
     }
 
     get pageRoot() {
@@ -45,5 +62,8 @@ export class ProductPage {
         const data = this.getData()
         const stock = new ProductComponent(this.pageRoot)
         stock.render(data)
+
+        const buttonGroup = new ButtonGroupComponent(this.pageRoot)
+        buttonGroup.render()
     }
 }

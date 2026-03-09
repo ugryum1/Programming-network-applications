@@ -10,21 +10,21 @@ export class MainPage {
         return [
             {
                 id: 1,
-                src: "https://i.pinimg.com/originals/c9/ea/65/c9ea654eb3a7398b1f702c758c1c4206.jpg",
-                title: "Акция",
-                text: "Такой акции вы еще не видели 1"
+                src: "static/img/1.png",
+                title: "Уличная фотография",
+                text: "Снято на пленочную камеру в центре города."
             },
             {
                 id: 2,
-                src: "https://i.pinimg.com/originals/c9/ea/65/c9ea654eb3a7398b1f702c758c1c4206.jpg",
-                title: "Акция",
-                text: "Такой акции вы еще не видели 2"
+                src: "static/img/2.png",
+                title: "Пейзаж",
+                text: "Вид на туманные горы ранним утром."
             },
             {
                 id: 3,
-                src: "https://i.pinimg.com/originals/c9/ea/65/c9ea654eb3a7398b1f702c758c1c4206.jpg",
-                title: "Акция",
-                text: "Такой акции вы еще не видели 3"
+                src: "static/img/3.png",
+                title: "Макро",
+                text: "Детальная съемка винтажного объектива."
             },
         ]
     }
@@ -36,7 +36,7 @@ export class MainPage {
     getHTML() {
         return (
             `
-                <div id="main-page" class="d-flex flex-wrap"><div/>
+                <div id="main-page" class="d-flex flex-wrap"></div>
             `
         )
     }

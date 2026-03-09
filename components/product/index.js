@@ -6,10 +6,11 @@ export class ProductComponent {
     getHTML(data) {
         return (
             `
-                <div class="card mb-3" style="width: 540px;">
+                <div class="card mb-3">
                     <div class="row g-0">
                         <div class="col-md-4">
-                            <img src="${data.src}" class="img-fluid" alt="картинка">
+                            <img src="${data.src}" class="img-fluid" alt="картинка"
+                                 style="height: 100%; min-height: 250px; max-height:500px; object-fit: cover;">
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">

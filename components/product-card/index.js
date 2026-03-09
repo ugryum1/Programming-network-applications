@@ -7,12 +7,13 @@ export class ProductCardComponent {
         return (
             `
                 <div class="card" style="width: 300px;">
-                    <img class="card-img-top" src="${data.src}" alt="картинка">
+                    <img class="card-img-top" src="${data.src}" alt="картинка"
+                         style="height: 200px; object-fit: cover;">
                     <div class="card-body">
                         <h5 class="card-title">${data.title}</h5>
                         <p class="card-text">${data.text}</p>
                         <button class="btn btn-primary" id="click-card-${data.id}"
-                                data-id="${data.id}">Нажми на меня</button>
+                                data-id="${data.id}">Открыть фото</button>
                     </div>
                 </div>
             `
