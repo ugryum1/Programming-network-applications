@@ -11,20 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     })
 
-    const themeSelect = document.getElementById('theme-select')
-
-    if (themeSelect) {
-        themeSelect.addEventListener('change', function() {
-            if (this.value === 'light') {
-                document.body.classList.add('light-theme');
-                header.classList.add('light-theme');
-            } else {
-                document.body.classList.remove('light-theme');
-                header.classList.remove('light-theme');
-            }
-        });
-    }
-
     const backgroundSelect = document.getElementById('background-select');
 
     if (backgroundSelect) {
