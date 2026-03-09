@@ -1,0 +1,24 @@
+{
+  "name": "programmingnetworkapplications",
+  "version": "1.0.0",
+  "description": "- **Задание**: Знакомство с node, npm. Верстка интерфейса с карточками (страница списка с фильтрацией и страница подробнее), данные получать через mock объекты (коллекция). Добавить кнопку добавления (копировать первую карточку), кнопку удаления карточки. В хедере на обеих страницах должна быть кнопка Домой - **Порядок показа**: объяснить состав компонентов в лабораторной, во вкладке `Network` показать GET запрос получения html и содержимое `Response` - **Контрольные вопросы**: опишите структуру вашего проекта, что такое MVC, что такое роутинг, ключевые этапы рендера",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ugryum1/programming-network-applications.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ugryum1/programming-network-applications/issues"
+  },
+  "homepage": "https://github.com/ugryum1/programming-network-applications#readme",
+  "dependencies": {
+    "bootstrap": "^5.3.8"
+  }
+}
