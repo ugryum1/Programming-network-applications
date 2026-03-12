@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Калькулятор</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <nav class="nav-links">
+            <a href="index.html">
+                <img src="./img/home-icon.png" alt="" class="nav-icon">
+                <span>Главная</span>
+            </a>
+            <a href="calculator.html" class="active">Калькулятор</a>
+            <a href="about.html">Об авторе</a>
+            <a href="purpose.html">Цель работы</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="https://github.com/iu5git/JavaScript" target="_blank" class="btn btn-outline">GitHub</a>
+        </div>
+    </header>
+
+    <main class="calc-wrapper">
+        <div class="calculator">
+            <div class="calc-display" id="result">0</div>
+
+            <div class="calc-row">
+                <button class="calc-btn op">C</button>
+                <button class="calc-btn op">+/-</button>
+                <button class="calc-btn op">%</button>
+                <button class="calc-btn op">/</button>
+            </div>
+            <div class="calc-row">
+                <button class="calc-btn">7</button>
+                <button class="calc-btn">8</button>
+                <button class="calc-btn">9</button>
+                <button class="calc-btn primary">x</button>
+            </div>
+            <div class="calc-row">
+                <button class="calc-btn">4</button>
+                <button class="calc-btn">5</button>
+                <button class="calc-btn">6</button>
+                <button class="calc-btn primary">-</button>
+            </div>
+            <div class="calc-row">
+                <button class="calc-btn">1</button>
+                <button class="calc-btn">2</button>
+                <button class="calc-btn">3</button>
+                <button class="calc-btn primary">+</button>
+            </div>
+            <div class="calc-row">
+                <button class="calc-btn">0</button>
+                <button class="calc-btn">.</button>
+                <button class="calc-btn primary execute">=</button>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

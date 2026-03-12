@@ -1,0 +1,269 @@
+/* Подключаем современный шрифт Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Базовые настройки страницы */
+body {
+    font-family: 'Inter', sans-serif; /* современный шрифт без засечек */
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;      /* основной фон сайта - белый */
+    color: #1a1a1a;                 /* основной цвет текста */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Стили для верхней панели навигации (Хедер) */
+.navbar {
+    display: flex;
+    justify-content: space-between; /* распределяем элементы по краям */
+    align-items: center;            /* центрируем по вертикали */
+    padding: 0 40px;                /* внутренние отступы по бокам */
+    height: 70px;                   /* фиксированная высота как на conveer.ru */
+    background: #1a1a1a;            /* черный фон меню */
+    position: sticky;               /* закрепляем меню при скролле */
+    top: 0;
+    z-index: 100;
+}
+
+/* Стили для контейнера со ссылками */
+.nav-links {
+    display: flex;
+    height: 100%;                   /* ссылки занимают всю высоту хедера */
+}
+
+/* Стили для отдельных ссылок в меню */
+.nav-links a {
+    text-decoration: none;          /* убираем подчеркивание */
+    color: #ffffff;                 /* белые буквы */
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0 20px;                /* отступы внутри ссылки */
+    height: 100%;
+    display: flex;
+    align-items: center;            /* центрируем текст ссылки */
+    transition: background 0.3s ease; /* плавная анимация смены фона */
+}
+
+/* Эффект при наведении на ссылку или активная вкладка */
+.nav-links a:hover,
+.nav-links a.active {
+    background: #007bff;            /* синий фон при наведении */
+    color: #ffffff;
+}
+
+/* Контейнер для кнопок в правой части хедера */
+.nav-actions {
+    display: flex;
+    gap: 10px;                      /* расстояние между кнопками */
+}
+
+/* Базовый стиль для кнопок */
+.btn {
+    padding: 8px 18px;
+    border-radius: 6px;             /* небольшое скругление */
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.3s ease;      /* анимация для всех свойств */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* полупрозрачная рамка */
+}
+
+/* Кнопка GitHub (контурная) */
+.btn-outline {
+    background: transparent;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+/* Кнопка смены темы (белая) */
+.btn-primary {
+    background: #ffffff;
+    color: #1a1a1a;
+    border: none;
+}
+
+/* Общий эффект наведения для кнопок в хедере */
+.btn:hover {
+    background: #007bff !important; /* всегда синий при наведении */
+    color: #ffffff !important;
+    border-color: #007bff;
+}
+
+/* Стили для главной страницы с картинкой */
+.page-home {
+    background-image: url('../img/image.png');
+    background-size: cover;         /* растягиваем картинку */
+    background-position: center;    /* центрируем */
+}
+
+/* Контентный блок поверх картинки */
+.hero {
+    flex: 1;                        /* занимает все свободное место */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.4); /* затемнение картинки */
+}
+
+/* Заголовок на главной */
+.hero-content h1 {
+    font-size: 3.5rem;
+    color: #1a1a1a;
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    font-weight: 700;
+    text-transform: uppercase;      /* все буквы заглавные */
+    letter-spacing: 2px;            /* расстояние между буквами */
+}
+
+/* Стили для страницы калькулятора */
+.calc-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    padding: 40px;
+    background: #fdfdfd;            /* почти белый фон */
+}
+
+/* Контейнер самого калькулятора */
+.calculator {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;            /* аккуратные углы */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); /* мягкая тень */
+    border: 1px solid #f0f0f0;      /* легкая рамка */
+}
+
+/* Экран калькулятора */
+.calc-display {
+    background: #f8f9fa;            /* светло-серый фон экрана */
+    border-radius: 8px;
+    padding: 20px;
+    font-size: 2rem;
+    text-align: right;              /* текст справа */
+    margin-bottom: 20px;
+    color: #1a1a1a;
+    border: 1px solid #f0f0f0;
+}
+
+/* Ряд кнопок калькулятора */
+.calc-row {
+    display: flex;
+    gap: 10px;                      /* отступ между кнопками */
+    margin-bottom: 10px;
+}
+
+/* Базовая кнопка калькулятора */
+.calc-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    background: #ffffff;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+/* Наведение на кнопку калькулятора */
+.calc-btn:hover {
+    background: #007bff;            /* синий при наведении */
+    color: #ffffff;
+    border-color: #007bff;
+}
+
+/* Кнопки операций (серые) */
+.calc-btn.primary {
+    background: #f0f0f0;
+}
+
+
+.calc-btn.primary:hover {
+    color: #444;
+}
+
+/* Кнопка выполнения операции (=) */
+.calc-btn.execute {
+    flex: 1;                        /* растягивается на всю ширину */
+    background: #007bff;            /* синяя по умолчанию */
+    color: #ffffff;
+    border: none;
+}
+
+/* Эффект для кнопки '=' при наведении */
+.calc-btn.execute:hover {
+    background: #0056b3;            /* чуть темнее при наведении */
+}
+
+/* Страницы с текстом (Об авторе, Цель работы) */
+.content-page {
+    padding: 60px 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    flex: 1;
+}
+
+/* Заголовки страниц */
+.content-page h2 {
+    font-size: 2.2rem;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+/* Карточка с информацией */
+.card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* Текст внутри карточек */
+.card p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #444;
+}
+
+/* Подсветка текста mark (в стиле Conveer) */
+mark {
+    background-color: #007bff;      /* синий фон */
+    color: #ffffff;                 /* белый текст */
+    padding: 2px 6px;               /* отступы вокруг слова */
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+/* Стили для иконки в меню */
+.nav-icon {
+    height: 100%;         /* Иконка растягивается по высоте ссылки */
+    width: auto;           /* Ширина подстраивается автоматически */
+    max-height: 50px;      /* Ограничиваем максимальный размер, чтобы не раздуть хедер */
+    object-fit: contain;   /* Картинка не деформируется */
+    margin-right: 10px;    /* Отступ от текста */
+}
+
+/* Стили для ссылок в меню*/
+.nav-links a {
+    text-decoration: none;
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0 25px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    transition: background 0.3s ease;
+    overflow: hidden;      /* Чтобы иконка не вылезала за пределы */
+}
+
+/* Эффект при наведении на всю кнопку */
+.nav-links a:hover .nav-icon {
+    transform: scale(1.1); /* Иконка немного увеличивается при наведении на кнопку */
+}
