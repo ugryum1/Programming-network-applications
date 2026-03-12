@@ -1,9 +1,6 @@
-/* Подключаем современный шрифт Inter */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 /* Базовые настройки страницы */
 body {
-    font-family: 'Inter', sans-serif; /* современный шрифт без засечек */
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #ffffff;      /* основной фон сайта - белый */
@@ -267,3 +264,21 @@ mark {
 .nav-links a:hover .nav-icon {
     transform: scale(1.1); /* Иконка немного увеличивается при наведении на кнопку */
 }
+
+/* Новый верхний блок над меню */
+.top-header {
+    background-color: #ffffff;
+    padding: 16px 64px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.top-header h1 {
+    margin: 0;
+    font-size: 24px;              /* Делаем размер чуть аккуратнее для шапки */
+    color: #1a1a1a;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+* { font-style: italic !important; }
