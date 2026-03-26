@@ -40,9 +40,19 @@ window.onload = function() {
     let expressionResult = '';
     let selectedOperation = null;
     let memory = 0;
+    let isFinalResult = false;
 
     const outputElement = document.getElementById("result");
     if (!outputElement) return;
+
+    function formatOutput(val) {
+        let str = val.toString();
+        if (str.length > 10) {
+            let num = parseFloat(val);
+            return num.toExponential(5); // 5 знаков после запятой в экспоненте
+        }
+        return str;
+    }
 
     const calcContainer = document.querySelector('.calculator-container');
     if (calcContainer) {
@@ -52,49 +62,53 @@ window.onload = function() {
 
             const val = currentBtn.innerHTML;
 
-            // 1. Backspace (стирание одной цифры)
+            // 1. Backspace
             if (val === '←') {
-                if (a !== '') {
+                if (isFinalResult) {
+                    a = '';
+                    outputElement.innerHTML = '0';
+                    isFinalResult = false;
+                } else if (a !== '') {
                     a = a.slice(0, -1);
-                    outputElement.innerHTML = (a === '' || a === '-') ? '0' : a;
+                    outputElement.innerHTML = (a === '' || a === '-') ? '0' : formatOutput(a);
                     if (a === '-') a = '';
                 }
                 return;
             }
 
-            // 2. Унарный минус (+/-)
+            // 2. Унарный минус
             if (val === '+/-') {
                 if (a !== '') {
                     a = (parseFloat(a) * -1).toString();
-                    outputElement.innerHTML = a;
+                    outputElement.innerHTML = formatOutput(a);
+                    isFinalResult = false;
                 }
                 return;
             }
 
-            // 3. Кнопка 1k (три нуля)
+            // 3. Кнопка 1k
             if (val === '1k') {
-                if (a === '' || a === '0') {
+                if (isFinalResult) {
                     a = '1000';
+                    isFinalResult = false;
                 } else {
-                    // Если число дробное (есть точка), просто дописываем нули как текст
-                    // Если целое — математически умножаем на 1000
-                    if (a.includes('.')) {
-                        a += '000';
-                    } else {
-                        a = (BigInt(a) * 1000n).toString();
+                    if (a === '' || a === '0') a = '1000';
+                    else {
+                        if (a.includes('.')) a += '000';
+                        else a = (BigInt(a) * 1000n).toString();
                     }
                 }
-                outputElement.innerHTML = a;
+                outputElement.innerHTML = formatOutput(a);
                 return;
             }
 
-            // 4. Бинарные операции (очищают экран для ввода второго числа)
             if (['+', '-', 'x', '/', 'xⁿ'].includes(val)) {
                 if (a === '') return;
                 b = a;
                 a = '';
                 selectedOperation = (val === 'xⁿ') ? '^' : val;
                 outputElement.innerHTML = '0';
+                isFinalResult = false;
                 return;
             }
 
@@ -102,7 +116,8 @@ window.onload = function() {
             if (val === 'x!') {
                 if (a !== '') {
                     a = fact(parseInt(a)).toString();
-                    outputElement.innerHTML = a;
+                    outputElement.innerHTML = formatOutput(a);
+                    isFinalResult = true;
                 }
                 return;
             }
@@ -110,26 +125,35 @@ window.onload = function() {
             if (val === '√') {
                 if (a !== '') {
                     a = Math.sqrt(parseFloat(a)).toString();
-                    outputElement.innerHTML = a;
+                    outputElement.innerHTML = formatOutput(a);
+                    isFinalResult = true;
                 }
                 return;
             }
 
-            // Игнорируем кнопки управления в этом блоке
-            if (['C', '=', 'M+', 'M-', 'MR', '←'].includes(val)) return;
+            if (['C', '=', 'M+', 'M-', 'MR'].includes(val)) return;
 
             // 6. Ввод цифр и точки
-            if (val === '.' && a.includes('.')) return;
-            if (a === '0' && val !== '.') a = ''; // убираем ведущий ноль
-
-            a += val;
-            outputElement.innerHTML = a;
+            if ((val >= '0' && val <= '9') || val === '.') {
+                if (isFinalResult) {
+                    a = (val === '.') ? '0.' : val;
+                    isFinalResult = false;
+                } else {
+                    if (val === '.' && a.includes('.')) return;
+                    // Ограничиваем ввод до 15 символов физически, но отображаем красиво
+                    if (a.length >= 15) return;
+                    if (a === '0' && val !== '.') a = '';
+                    a += val;
+                }
+                outputElement.innerHTML = formatOutput(a);
+            }
         });
     }
 
     // Кнопка очистки (C)
     document.getElementById("btn_op_clear").onclick = function() {
         a = ''; b = ''; selectedOperation = null;
+        isFinalResult = false;
         outputElement.innerHTML = '0';
     };
 
@@ -151,7 +175,8 @@ window.onload = function() {
         a = expressionResult.toString();
         b = '';
         selectedOperation = null;
-        outputElement.innerHTML = a;
+        isFinalResult = true;
+        outputElement.innerHTML = formatOutput(a);
     };
 
     // Работа с памятью
@@ -165,10 +190,10 @@ window.onload = function() {
 
     document.getElementById("btn_mem_recall").onclick = function() {
         a = memory.toString();
-        outputElement.innerHTML = a;
+        outputElement.innerHTML = formatOutput(a);
+        isFinalResult = true;
     };
 
-    // Смена цветов элементов
     document.getElementById("change-calc-color").onclick = function() {
         document.querySelector(".calculator-container").classList.toggle("calc-alt-color");
     };
