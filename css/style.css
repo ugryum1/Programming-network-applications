@@ -238,6 +238,22 @@ body:not(.light-theme) .my-btn {
 .my-btn.secondary { background: #ced4da; }
 .my-btn.execute { background: #007bff; color: #fff; }
 
-/* Динамические цвета из JS */
 .calc-alt-color { background: #d1ecf1 !important; }
 .res-alt-color { background: #fff3cd !important; color: #856404 !important; }
+
+.extra-controls .btn-outline {
+    color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.4);
+    background: transparent;
+}
+
+body.light-theme .extra-controls .btn-outline {
+    color: #1a1a1a;
+    border-color: #1a1a1a;
+}
+
+.extra-controls .btn-outline:hover {
+    background: #007bff !important;
+    color: #ffffff !important;
+    border-color: #007bff !important;
+}
