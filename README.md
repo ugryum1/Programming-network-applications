@@ -2,6 +2,20 @@
 
 **Вариант 7** — тема: конвейеры, компонент: группа кнопок.
 
+## Навигация по отчёту
+
+- [Структура проекта](#структура-проекта)
+- [Что сделано](#что-сделано)
+  - [1. Инициализация проекта](#1-инициализация-проекта)
+  - [2. Главная страница (index.html)](#2-главная-страница-indexhtml)
+  - [3. Точка входа (main.js)](#3-точка-входа-mainjs)
+  - [4. Страница каталога (pages/main/index.js)](#4-страница-каталога-pagesmainindexjs)
+  - [5. Компонент карточки (components/product-card/index.js)](#5-компонент-карточки-componentsproduct-cardindexjs)
+  - [6. Страница товара (pages/product/index.js)](#6-страница-товара-pagesproductindexjs)
+  - [7. Группа кнопок — компонент по варианту (components/button-group/index.js)](#7-группа-кнопок--компонент-по-варианту-componentsbutton-groupindexjs)
+  - [8. Навигация между страницами](#8-навигация-между-страницами)
+- [Итог](#итог)
+
 ## Структура проекта
 
 ```
@@ -118,18 +132,22 @@ render() {
 
 ### 7. Группа кнопок — компонент по варианту (components/button-group/index.js)
 
-Используется Bootstrap `btn-group` с тремя действиями:
+Реализованы горизонтальные вкладки в стиле conveer.ru с тремя разделами: «О продукте», «Технические характеристики», «Опции». При нажатии на вкладку отображается соответствующий контент:
 
 ```js
 getHTML() {
-    return `
-        <div class="btn-group mt-3" role="group">
-            <button type="button" class="btn btn-outline-primary">Заказать</button>
-            <button type="button" class="btn btn-outline-secondary">В сравнение</button>
-            <button type="button" class="btn btn-outline-success">Скачать PDF</button>
-        </div>`;
+    const tabs = this.getTabsData();
+    const buttons = tabs.map((tab, i) =>
+        `<button class="tab-btn${i === 0 ? ' active' : ''}" data-tab="${tab.id}">${tab.label}</button>`
+    ).join('');
+    const panels = tabs.map((tab, i) =>
+        `<div class="tab-content-panel" id="tab-panel-${tab.id}" style="${i !== 0 ? 'display:none;' : ''}">${tab.content}</div>`
+    ).join('');
+    return `<div class="product-tabs">${buttons}</div>${panels}`;
 }
 ```
+
+Активная вкладка выделяется синей верхней границей и белым фоном. Переключение реализовано через `addEventListener` на каждой кнопке.
 
 ### 8. Навигация между страницами
 

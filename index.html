@@ -36,12 +36,52 @@
             background-color: #1a6bb5;
             border-color: #1a6bb5;
         }
+        .product-tabs {
+            display: flex;
+            gap: 6px;
+            margin-top: 20px;
+            max-width: 700px;
+            width: 100%;
+        }
+        .product-tabs .tab-btn {
+            padding: 10px 28px;
+            background: #1a3a5c;
+            border: 2px solid #1a3a5c;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            text-align: center;
+            transition: background 0.2s, border-color 0.2s;
+            outline: none;
+        }
+        .product-tabs .tab-btn:hover {
+            background: #14507a;
+            border-color: #14507a;
+        }
+        .product-tabs .tab-btn.active {
+            background: #1a3a5c;
+            color: #fff;
+            border-color: #1a3a5c;
+        }
+        .tab-content-panel {
+            max-width: 700px;
+            width: 100%;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            padding: 20px 24px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #333;
+        }
     </style>
 </head>
 <body>
 <nav class="navbar navbar-dark navbar-custom mb-4">
     <div class="container">
-        <span class="navbar-brand mb-0 h1">Конвейерное оборудование</span>
+        <a class="navbar-brand mb-0 h1" href="#" id="nav-home" style="text-decoration:none;cursor:pointer;">Конвейерное оборудование</a>
     </div>
 </nav>
 <div id="root" class="container"></div>
