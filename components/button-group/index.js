@@ -5,10 +5,10 @@ export class ButtonGroupComponent {
 
     getHTML() {
         return `
-            <div class="btn-group mt-3" role="group" aria-label="Действия с фото">
-                <button type="button" class="btn btn-outline-primary">Лайк</button>
-                <button type="button" class="btn btn-outline-secondary">Сохранить</button>
-                <button type="button" class="btn btn-outline-success">Поделиться</button>
+            <div class="btn-group mt-3" role="group" aria-label="Действия с конвейером">
+                <button type="button" class="btn btn-outline-primary">Заказать</button>
+                <button type="button" class="btn btn-outline-secondary">В сравнение</button>
+                <button type="button" class="btn btn-outline-success">Скачать PDF</button>
             </div>
         `;
     }

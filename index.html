@@ -2,11 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Simple App</title>
+    <title>Конвейерное оборудование</title>
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f5f7fa;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .navbar-custom {
+            background-color: #1a3a5c;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: box-shadow 0.2s;
+        }
+        .card:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+        }
+        .btn-primary {
+            background-color: #1a6bb5;
+            border-color: #1a6bb5;
+        }
+        .btn-primary:hover {
+            background-color: #14507a;
+            border-color: #14507a;
+        }
+        .btn-outline-primary {
+            color: #1a6bb5;
+            border-color: #1a6bb5;
+        }
+        .btn-outline-primary:hover {
+            background-color: #1a6bb5;
+            border-color: #1a6bb5;
+        }
+    </style>
 </head>
 <body>
-<div id="root"></div>
+<nav class="navbar navbar-dark navbar-custom mb-4">
+    <div class="container">
+        <span class="navbar-brand mb-0 h1">Конвейерное оборудование</span>
+    </div>
+</nav>
+<div id="root" class="container"></div>
 <script src="main.js" type="module"></script>
 
 <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
