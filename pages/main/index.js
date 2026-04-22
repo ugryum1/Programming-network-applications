@@ -1,5 +1,6 @@
 import {ProductCardComponent} from "../../components/product-card/index.js";
 import {ProductPage} from "../product/index.js";
+import {ProductionReportComponent} from "../../components/production-report/index.js";
 
 export class MainPage {
     constructor(parent) {
@@ -42,8 +43,9 @@ export class MainPage {
     getHTML() {
         return (
             `
-                <h2 class="text-center mb-4" style="color: #1a3a5c;">Каталог конвейеров</h2>
+                <h2 class="text-center mb-4 page-title">Каталог конвейеров</h2>
                 <div id="main-page" class="row justify-content-center g-4"></div>
+                <div id="report-slot" class="mt-5"></div>
             `
         )
     }
@@ -65,5 +67,9 @@ export class MainPage {
             const productCard = new ProductCardComponent(this.pageRoot)
             productCard.render(item, this.clickCard.bind(this))
         })
+
+        const reportSlot = document.getElementById('report-slot')
+        const report = new ProductionReportComponent(reportSlot)
+        report.render()
     }
 }

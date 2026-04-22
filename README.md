@@ -1,158 +1,143 @@
-# Отчёт по ЛР 3. Простое веб-приложение
+# Отчёт по ДЗ. Коллекции, функции, классы + three.js
 
-**Вариант 7** — тема: конвейеры, компонент: группа кнопок.
+**Тема:** автоматизация конвейерных линий
 
-## Навигация по отчёту
+**Вариант по фамилии (У)** → задача **2.11** (2 уровень)
+**Вариант по группе (ИУ5-42Б)** → задача **3.2** (3 уровень)
 
+## Оглавление
+
+- [Часть 1. Задачи по варианту](#часть-1-задачи-по-варианту)
+  - [Задача 2.11 — mergeConveyorThroughput](#задача-211--mergeconveyorthroughput)
+  - [Задача 3.2 — inverseConveyorStages](#задача-32--inverseconveyorstages)
+  - [Интеграция в тему (ProductionReport)](#интеграция-в-тему-productionreport)
+  - [Обязательные элементы ДЗ](#обязательные-элементы-дз)
+- [Часть 2. 3D-модель на странице Подробнее](#часть-2-3d-модель-на-странице-подробнее)
+- [Стиль под conveer.ru](#стиль-под-conveerru)
 - [Структура проекта](#структура-проекта)
-- [Что сделано](#что-сделано)
-  - [1. Инициализация проекта](#1-инициализация-проекта)
-  - [2. Главная страница (index.html)](#2-главная-страница-indexhtml)
-  - [3. Точка входа (main.js)](#3-точка-входа-mainjs)
-  - [4. Страница каталога (pages/main/index.js)](#4-страница-каталога-pagesmainindexjs)
-  - [5. Компонент карточки (components/product-card/index.js)](#5-компонент-карточки-componentsproduct-cardindexjs)
-  - [6. Страница товара (pages/product/index.js)](#6-страница-товара-pagesproductindexjs)
-  - [7. Группа кнопок — компонент по варианту (components/button-group/index.js)](#7-группа-кнопок--компонент-по-варианту-componentsbutton-groupindexjs)
-  - [8. Навигация между страницами](#8-навигация-между-страницами)
-- [Итог](#итог)
+- [Запуск](#запуск)
+
+## Часть 1. Задачи по варианту
+
+### Задача 2.11 — mergeConveyorThroughput
+
+Объединяет произвольное количество плоских массивов чисел и возвращает строку
+со значениями по убыванию через пробел.
+
+Файл: [utils/merge-throughput.js](utils/merge-throughput.js)
+
+```js
+export function mergeConveyorThroughput(...throughputSections) {
+    const combined = [];
+    for (const section of throughputSections) {
+        for (const value of section) combined.push(value);
+    }
+    combined.sort((a, b) => b - a);
+    return combined.join(' ');
+}
+```
+
+Тест из условия: `mergeConveyorThroughput([1,2,3], [-1,-10,20])` → `"20 3 2 1 -1 -10"` ✓
+
+### Задача 3.2 — inverseConveyorStages
+
+Разворачивает массив. Второй аргумент `keep`:
+- не задан → полный реверс;
+- `keep > 0` → первые `keep` элементов остаются на месте, остальные разворачиваются;
+- `keep < 0` → последние `|keep|` элементов остаются на месте, остальные разворачиваются.
+
+Файл: [utils/inverse-stages.js](utils/inverse-stages.js)
+
+Проверенные случаи:
+
+| Вход | Выход |
+|---|---|
+| `[1,2,3,4,5]` | `[5,4,3,2,1]` |
+| `[1,2,3,4,5], 2` | `[1,2,5,4,3]` |
+| `[1,2,3,4,5], -2` | `[3,2,1,4,5]` |
+| `['a','b','c','d'], 10` (keep > length) | `['a','b','c','d']` |
+
+### Интеграция в тему (ProductionReport)
+
+На главной странице добавлен блок **«Отчёт по производственной линии»**
+([components/production-report/index.js](components/production-report/index.js)),
+который использует обе утилиты на реальных данных темы:
+
+- `mergeConveyorThroughput(...)` сводит показатели производительности трёх линий
+  в общий топ по убыванию (т/ч).
+- `inverseConveyorStages(stages, 2)` формирует порядок этапов в режиме
+  демонтажа: первые 2 этапа пуска сохраняются, остальные идут в обратном порядке.
+
+### Обязательные элементы ДЗ
+
+Все в `ProductionReportComponent`:
+
+| Требование | Где реализовано |
+|---|---|
+| Цикл с постусловием, не по счётчику | `do { ... } while (msg !== "СТОП" && i < queue.length)` в `readUntilStop` — контроллер читает очередь сообщений до команды «СТОП» |
+| Объект | `getData()` возвращает объект с полями `throughput`, `stages`, `queue` |
+| Строка | итоговый текст отчёта, сообщения лога |
+| Коллекция | массивы `throughput`, `stages`, `queue` |
+
+Имена переменных и функций даны по теме: `mergeConveyorThroughput`,
+`inverseConveyorStages`, `controllerQueue`, `assemblyStages`, `throughputSections`.
+
+## Часть 2. 3D-модель на странице Подробнее
+
+Компонент [components/conveyor-viewer/index.js](components/conveyor-viewer/index.js)
+выводит 3D-модель конвейера рядом с картинкой продукта.
+
+- Используется **three.js** через importmap в [index.html](index.html).
+- Загрузка `.glb` — через `GLTFLoader`, управление камерой — через `OrbitControls`.
+- Для каждой из 4 карточек каталога подгружается своя модель по пути
+  `static/models/{id}.glb` (1 — ленточный, 2 — роликовый, 3 — цепной,
+  4 — подвесной).
+- Модель автоматически центрируется и масштабируется в сцене.
+
+Путь к модели передаётся из страницы продукта:
+
+```js
+new ConveyorViewerComponent(this.pageRoot, `static/models/${data.id}.glb`).render()
+```
+
+## Стиль под conveer.ru
+
+Палитра перекрашена под референс `https://conveer.ru/`:
+
+- фон — белый (`#ffffff`), текст — чёрный;
+- кнопки (`.btn-primary`, табы, back-button) — чёрные, при наведении темно-синие (`#14213d`);
+- шапка — чёрная;
+- карточки — светлая рамка, лёгкая тень при hover.
+
+Все стили — в `<style>` блоке [index.html](index.html).
 
 ## Структура проекта
 
 ```
-├── index.html
-├── main.js
-├── pages/
-│   ├── main/index.js        — главная страница (каталог)
-│   └── product/index.js     — страница товара
+├── index.html                          — importmap three.js + стили
+├── main.js                             — точка входа
+├── utils/
+│   ├── merge-throughput.js             — задача 2.11
+│   └── inverse-stages.js               — задача 3.2
 ├── components/
-│   ├── product-card/index.js — карточка конвейера
-│   ├── product/index.js      — детальный вид конвейера
-│   ├── button-group/index.js — группа кнопок (компонент по варианту)
-│   └── back-button/index.js  — кнопка «Назад»
-├── package.json
-└── .gitignore
+│   ├── product-card/                   — карточка каталога
+│   ├── product/                        — детальный вид товара
+│   ├── back-button/                    — «Назад к каталогу»
+│   ├── button-group/                   — вкладки на странице товара
+│   ├── production-report/              — блок отчёта (обе утилиты + do-while)
+│   └── conveyor-viewer/                — 3D-просмотрщик .glb
+├── pages/
+│   ├── main/index.js                   — каталог + встроенный отчёт
+│   └── product/index.js                — товар + 3D-модель
+└── static/
+    ├── img/{1..4}.png                  — изображения карточек
+    └── models/{1..4}.glb               — 3D-модели (подставляются пользователем)
 ```
 
-## Что сделано
-
-### 1. Инициализация проекта
-
-Создан npm-проект, установлен Bootstrap:
+## Запуск
 
 ```bash
-npm init
-npm i bootstrap
+npm install
+python3 -m http.server 8000
+# открыть http://localhost:8000/
 ```
-
-### 2. Главная страница (index.html)
-
-Подключён Bootstrap, добавлен навбар в индустриальном стиле и кастомные стили:
-
-```html
-<nav class="navbar navbar-dark navbar-custom mb-4">
-    <div class="container">
-        <span class="navbar-brand mb-0 h1">Конвейерное оборудование</span>
-    </div>
-</nav>
-<div id="root" class="container"></div>
-```
-
-Стили оформлены в промышленной сине-белой гамме (цвета `#1a3a5c`, `#1a6bb5`), карточки с тенью и hover-эффектом.
-
-### 3. Точка входа (main.js)
-
-```js
-import {MainPage} from "./pages/main/index.js";
-const root = document.getElementById('root');
-const mainPage = new MainPage(root);
-mainPage.render();
-```
-
-### 4. Страница каталога (pages/main/index.js)
-
-Содержит массив из 4 конвейеров и отрисовывает их через `ProductCardComponent`:
-
-```js
-getData() {
-    return [
-        { id: 1, src: "...", title: "Ленточный конвейер", text: "..." },
-        { id: 2, src: "...", title: "Роликовый конвейер", text: "..." },
-        { id: 3, src: "...", title: "Цепной конвейер", text: "..." },
-        { id: 4, src: "...", title: "Подвесной конвейер", text: "..." },
-    ]
-}
-
-render() {
-    this.parent.innerHTML = ''
-    this.parent.insertAdjacentHTML('beforeend', this.getHTML())
-    this.getData().forEach((item) => {
-        const productCard = new ProductCardComponent(this.pageRoot)
-        productCard.render(item, this.clickCard.bind(this))
-    })
-}
-```
-
-Карточки центрированы с помощью Bootstrap-классов `row justify-content-center g-4`.
-
-### 5. Компонент карточки (components/product-card/index.js)
-
-Адаптивная сетка (`col-md-6 col-lg-3`), одинаковая высота карточек (`h-100`), кнопка «Подробнее» с обработчиком:
-
-```js
-getHTML(data) {
-    return `
-        <div class="col-md-6 col-lg-3">
-            <div class="card h-100">
-                <img class="card-img-top" src="${data.src}" ...>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">${data.title}</h5>
-                    <p class="card-text text-muted">${data.text}</p>
-                    <button class="btn btn-primary mt-auto"
-                            id="click-card-${data.id}" data-id="${data.id}">Подробнее</button>
-                </div>
-            </div>
-        </div>`;
-}
-```
-
-### 6. Страница товара (pages/product/index.js)
-
-При клике на карточку открывается детальная страница с `ProductComponent`, `BackButtonComponent` и `ButtonGroupComponent`:
-
-```js
-render() {
-    this.parent.innerHTML = ''
-    this.parent.insertAdjacentHTML('beforeend', this.getHTML())
-
-    new BackButtonComponent(this.pageRoot).render(this.clickBack.bind(this))
-    new ProductComponent(this.pageRoot).render(this.getData())
-    new ButtonGroupComponent(this.pageRoot).render()
-}
-```
-
-### 7. Группа кнопок — компонент по варианту (components/button-group/index.js)
-
-Реализованы горизонтальные вкладки в стиле conveer.ru с тремя разделами: «О продукте», «Технические характеристики», «Опции». При нажатии на вкладку отображается соответствующий контент:
-
-```js
-getHTML() {
-    const tabs = this.getTabsData();
-    const buttons = tabs.map((tab, i) =>
-        `<button class="tab-btn${i === 0 ? ' active' : ''}" data-tab="${tab.id}">${tab.label}</button>`
-    ).join('');
-    const panels = tabs.map((tab, i) =>
-        `<div class="tab-content-panel" id="tab-panel-${tab.id}" style="${i !== 0 ? 'display:none;' : ''}">${tab.content}</div>`
-    ).join('');
-    return `<div class="product-tabs">${buttons}</div>${panels}`;
-}
-```
-
-Активная вкладка выделяется синей верхней границей и белым фоном. Переключение реализовано через `addEventListener` на каждой кнопке.
-
-### 8. Навигация между страницами
-
-Переход на страницу товара — по клику на кнопку карточки через `addEventListener`. Возврат — через кнопку «Назад к каталогу», которая создаёт новый `MainPage` и вызывает `render()`.
-
-## Итог
-
-Реализовано двухстраничное SPA-приложение на тему конвейерного оборудования с использованием vanilla JS (ES6-модули, классы) и Bootstrap 5. Применён компонентный подход: страницы состоят из переиспользуемых компонентов, данные передаются через параметры методов.

@@ -2,6 +2,7 @@ import {ProductComponent} from "../../components/product/index.js";
 import {BackButtonComponent} from "../../components/back-button/index.js";
 import {MainPage} from "../main/index.js";
 import { ButtonGroupComponent } from "../../components/button-group/index.js";
+import {ConveyorViewerComponent} from "../../components/conveyor-viewer/index.js";
 
 export class ProductPage {
     constructor(parent, id) {
@@ -68,6 +69,9 @@ export class ProductPage {
         const data = this.getData()
         const stock = new ProductComponent(this.pageRoot)
         stock.render(data)
+
+        const viewer = new ConveyorViewerComponent(this.pageRoot, `static/models/${data.id}.glb`)
+        viewer.render()
 
         const buttonGroup = new ButtonGroupComponent(this.pageRoot)
         buttonGroup.render()

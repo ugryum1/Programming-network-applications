@@ -11,7 +11,7 @@ export class ProductCardComponent {
                         <img class="card-img-top" src="${data.src}" alt="${data.title}"
                              style="height: 220px; object-fit: cover;">
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title" style="color: #1a3a5c;">${data.title}</h5>
+                            <h5 class="card-title">${data.title}</h5>
                             <p class="card-text text-muted flex-grow-1">${data.text}</p>
                             <button class="btn btn-primary mt-auto" id="click-card-${data.id}"
                                     data-id="${data.id}">Подробнее</button>
