@@ -1,9 +1,7 @@
 const fileService = require('./fileService');
 
-// Переменная для хранения пути к файлу данных, будет установлена при инициализации
 let dataFilePath;
 
-// Функция инициализации сервиса с путем к файлу данных
 const init = (filePath) => {
     dataFilePath = filePath;
 };
@@ -26,7 +24,6 @@ const findOne = (id) => {
 const create = (stockData) => {
     const stocks = fileService.readData(dataFilePath);
 
-    // Генерация ID: берем максимальный ID + 1
     const newId = stocks.length > 0
         ? Math.max(...stocks.map(s => s.id)) + 1
         : 1;
@@ -55,7 +52,7 @@ const remove = (id) => {
     const filteredStocks = stocks.filter(s => s.id !== id);
 
     if (filteredStocks.length === stocks.length) {
-        return false; // Ничего не удалили
+        return false;
     }
 
     fileService.writeData(dataFilePath, filteredStocks);

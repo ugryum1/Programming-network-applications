@@ -48,7 +48,7 @@ const deleteStock = (req, res) => {
         return res.status(404).json({ error: 'Карточка не найдена' });
     }
 
-    res.status(204).send(); // 204 No Content
+    res.status(204).send();
 };
 
 module.exports = {
