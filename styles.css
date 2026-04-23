@@ -54,6 +54,7 @@ input[type="file"] {
 }
 
 .card {
+    position: relative;
     background: #ffffff;
     border: 1px solid #e0e0e0;
     padding: 16px;
@@ -62,6 +63,29 @@ input[type="file"] {
     align-items: center;
     cursor: pointer;
     transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.card-remove {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    line-height: 26px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #000000;
+    border: 2px solid #000000;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.card-remove:hover {
+    background: #14213d;
+    border-color: #14213d;
 }
 
 .card:hover {

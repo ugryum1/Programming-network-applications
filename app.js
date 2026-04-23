@@ -32,6 +32,22 @@ function addCard(conveyor, isUser) {
     card.className = "card";
     card.tabIndex = 0;
 
+    if (isUser) {
+        const remove = document.createElement("button");
+        remove.className = "card-remove";
+        remove.type = "button";
+        remove.title = "Удалить модель";
+        remove.textContent = "×";
+        remove.onclick = (e) => {
+            e.stopPropagation();
+            deleteConveyorFromDB(conveyor.id).then(() => {
+                userConveyors = userConveyors.filter(c => c.id !== conveyor.id);
+                renderCards();
+            });
+        };
+        card.appendChild(remove);
+    }
+
     const previewCanvas = document.createElement("canvas");
     previewCanvas.className = "preview-canvas";
     previewCanvas.width = 180;

@@ -38,3 +38,12 @@ function getConveyorByIdFromDB(id) {
         req.onerror = () => reject(req.error);
     }));
 }
+
+function deleteConveyorFromDB(id) {
+    return openConveyorDB().then(db => new Promise((resolve, reject) => {
+        const tx = db.transaction("conveyors", "readwrite");
+        const req = tx.objectStore("conveyors").delete(Number(id));
+        req.onsuccess = () => resolve();
+        req.onerror = () => reject(req.error);
+    }));
+}
