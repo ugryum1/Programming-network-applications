@@ -40,6 +40,23 @@ const updateStock = (req, res) => {
     res.json(updatedStock);
 };
 
+const replaceStock = (req, res) => {
+    const id = parseInt(req.params.id);
+    const { src, title, text } = req.body;
+
+    if (!src || !title || !text) {
+        return res.status(400).json({ error: 'Не все поля заполнены' });
+    }
+
+    const replacedStock = stocksService.replace(id, { src, title, text });
+
+    if (!replacedStock) {
+        return res.status(404).json({ error: 'Карточка не найдена' });
+    }
+
+    res.json(replacedStock);
+};
+
 const deleteStock = (req, res) => {
     const id = parseInt(req.params.id);
     const success = stocksService.remove(id);
@@ -56,5 +73,6 @@ module.exports = {
     getStockById,
     createStock,
     updateStock,
+    replaceStock,
     deleteStock
 };

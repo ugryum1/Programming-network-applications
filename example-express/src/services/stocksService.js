@@ -47,6 +47,18 @@ const update = (id, stockData) => {
     return stocks[index];
 };
 
+const replace = (id, stockData) => {
+    const stocks = fileService.readData(dataFilePath);
+    const index = stocks.findIndex(s => s.id === id);
+
+    if (index === -1) return null;
+
+    stocks[index] = { id, ...stockData };
+    fileService.writeData(dataFilePath, stocks);
+
+    return stocks[index];
+};
+
 const remove = (id) => {
     const stocks = fileService.readData(dataFilePath);
     const filteredStocks = stocks.filter(s => s.id !== id);
@@ -59,4 +71,4 @@ const remove = (id) => {
     return true;
 };
 
-module.exports = { init, findAll, findOne, create, update, remove };
+module.exports = { init, findAll, findOne, create, update, replace, remove };
