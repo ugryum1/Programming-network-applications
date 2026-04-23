@@ -7,15 +7,26 @@
 
 ## Оглавление
 
+- [Структура проекта](#структура-проекта)
 - [Часть 1. Задачи по варианту](#часть-1-задачи-по-варианту)
   - [Задача 2.11 — mergeConveyorThroughput](#задача-211--mergeconveyorthroughput)
   - [Задача 3.2 — inverseConveyorStages](#задача-32--inverseconveyorstages)
-  - [Интеграция в тему (ProductionReport)](#интеграция-в-тему-productionreport)
+  - [Интеграция в приложение](#интеграция-в-приложение)
   - [Обязательные элементы ДЗ](#обязательные-элементы-дз)
-- [Часть 2. 3D-модель на странице Подробнее](#часть-2-3d-модель-на-странице-подробнее)
+- [Часть 2. 3D-галерея на three.js](#часть-2-3d-галерея-на-threejs)
 - [Стиль под conveer.ru](#стиль-под-conveerru)
-- [Структура проекта](#структура-проекта)
 - [Запуск](#запуск)
+
+## Структура проекта
+
+```
+├── index.html    detail.html    styles.css
+├── app.js        detail.js      idb.js
+├── utils/
+│   ├── merge-throughput.js    — задача 2.11
+│   └── inverse-stages.js      — задача 3.2
+└── static/models/{1..4}.glb   — 3D-модели конвейеров
+```
 
 ## Часть 1. Задачи по варианту
 
@@ -23,8 +34,7 @@
 
 Объединяет произвольное количество плоских массивов чисел и возвращает строку
 со значениями по убыванию через пробел.
-
-Файл: [utils/merge-throughput.js](utils/merge-throughput.js)
+Файл: [utils/merge-throughput.js](utils/merge-throughput.js).
 
 ```js
 export function mergeConveyorThroughput(...throughputSections) {
@@ -43,12 +53,10 @@ export function mergeConveyorThroughput(...throughputSections) {
 
 Разворачивает массив. Второй аргумент `keep`:
 - не задан → полный реверс;
-- `keep > 0` → первые `keep` элементов остаются на месте, остальные разворачиваются;
-- `keep < 0` → последние `|keep|` элементов остаются на месте, остальные разворачиваются.
+- `keep > 0` → первые `keep` элементов остаются на месте;
+- `keep < 0` → последние `|keep|` элементов остаются на месте.
 
-Файл: [utils/inverse-stages.js](utils/inverse-stages.js)
-
-Проверенные случаи:
+Файл: [utils/inverse-stages.js](utils/inverse-stages.js). Проверенные случаи:
 
 | Вход | Выход |
 |---|---|
@@ -57,87 +65,76 @@ export function mergeConveyorThroughput(...throughputSections) {
 | `[1,2,3,4,5], -2` | `[3,2,1,4,5]` |
 | `['a','b','c','d'], 10` (keep > length) | `['a','b','c','d']` |
 
-### Интеграция в тему (ProductionReport)
+### Интеграция в приложение
 
-На главной странице добавлен блок **«Отчёт по производственной линии»**
-([components/production-report/index.js](components/production-report/index.js)),
-который использует обе утилиты на реальных данных темы:
+Обе утилиты используются в [app.js](app.js):
 
-- `mergeConveyorThroughput(...)` сводит показатели производительности трёх линий
-  в общий топ по убыванию (т/ч).
-- `inverseConveyorStages(stages, 2)` формирует порядок этапов в режиме
-  демонтажа: первые 2 этапа пуска сохраняются, остальные идут в обратном порядке.
+- Кнопка **«Развернуть порядок каталога»** вызывает
+  `inverseConveyorStages(presetsOrder, 1)` — меняет порядок карточек в галерее,
+  оставляя первый тип (Ленточный конвейер) на своём месте.
+- Функция `buildProductionReport()` собирает блок **«Отчёт по
+  производственной линии»** под галереей: через `mergeConveyorThroughput(...)`
+  сводит показатели производительности трёх линий в общий топ по убыванию,
+  через `inverseConveyorStages(stages, 2)` формирует порядок этапов в режиме
+  демонтажа.
 
 ### Обязательные элементы ДЗ
 
-Все в `ProductionReportComponent`:
+Все сосредоточены в `buildProductionReport` ([app.js](app.js)):
 
 | Требование | Где реализовано |
 |---|---|
-| Цикл с постусловием, не по счётчику | `do { ... } while (msg !== "СТОП" && i < queue.length)` в `readUntilStop` — контроллер читает очередь сообщений до команды «СТОП» |
-| Объект | `getData()` возвращает объект с полями `throughput`, `stages`, `queue` |
-| Строка | итоговый текст отчёта, сообщения лога |
-| Коллекция | массивы `throughput`, `stages`, `queue` |
+| Цикл с постусловием, не по счётчику | `do { ... } while (message !== "СТОП" && i < controllerQueue.length)` — контроллер читает очередь сообщений до команды «СТОП» |
+| Объект | `report = { throughput, stages, controllerQueue }` с вложенным объектом показателей по линиям |
+| Строка | сообщения очереди, имена линий, итоговый текст отчёта |
+| Коллекция | массивы `stages`, `controllerQueue` и три массива `throughput.*` |
 
-Имена переменных и функций даны по теме: `mergeConveyorThroughput`,
-`inverseConveyorStages`, `controllerQueue`, `assemblyStages`, `throughputSections`.
+Имена переменных и функций — по теме: `CONVEYOR_PRESETS`, `userConveyors`,
+`renderConveyorPreview`, `openConveyorDB`, `mergeConveyorThroughput`,
+`inverseConveyorStages`, `controllerQueue`.
 
-## Часть 2. 3D-модель на странице Подробнее
+## Часть 2. 3D-галерея на three.js
 
-Компонент [components/conveyor-viewer/index.js](components/conveyor-viewer/index.js)
-выводит 3D-модель конвейера рядом с картинкой продукта.
+Реализована по методичке из папки `threejs/`:
 
-- Используется **three.js** через importmap в [index.html](index.html).
-- Загрузка `.glb` — через `GLTFLoader`, управление камерой — через `OrbitControls`.
-- Для каждой из 4 карточек каталога подгружается своя модель по пути
-  `static/models/{id}.glb` (1 — ленточный, 2 — роликовый, 3 — цепной,
-  4 — подвесной).
-- Модель автоматически центрируется и масштабируется в сцене.
+- **Главная** ([index.html](index.html) + [app.js](app.js)) — сетка карточек
+  конвейерного оборудования 4 в ряд; каждая карточка содержит canvas
+  с single-frame предпросмотром .glb (Three.js + `GLTFLoader`).
+  Предпросмотр центрируется по основанию и масштабируется под размер карточки.
+- **Загрузка пользовательских моделей** ([idb.js](idb.js)) — через кнопку
+  «Загрузить свою модель (.glb)»: файл читается как `ArrayBuffer` и сохраняется
+  в IndexedDB (`ConveyorGalleryDB/conveyors`); после загрузки в галерее
+  появляется дополнительная карточка.
+- **Подробнее** ([detail.html](detail.html) + [detail.js](detail.js)) —
+  полноэкранный viewer с `OrbitControls` (вращение мышью), кнопками зума и
+  быстрой сменой ракурса (спереди/сзади/слева/справа). Модель выбирается по
+  `?id=` для пресетов или `?user=` для пользовательских.
 
-Путь к модели передаётся из страницы продукта:
+Предустановленные модели:
+- `static/models/1.glb` — Ленточный конвейер
+- `static/models/2.glb` — Роликовый конвейер
+- `static/models/3.glb` — Цепной конвейер
+- `static/models/4.glb` — Подвесной конвейер
 
-```js
-new ConveyorViewerComponent(this.pageRoot, `static/models/${data.id}.glb`).render()
-```
+Three.js подключается через `importmap` в `<head>` каждого HTML
+(`three` и `three/examples/jsm/` с unpkg).
 
 ## Стиль под conveer.ru
 
-Палитра перекрашена под референс `https://conveer.ru/`:
-
+Референс — [conveer.ru](https://conveer.ru/):
 - фон — белый (`#ffffff`), текст — чёрный;
-- кнопки (`.btn-primary`, табы, back-button) — чёрные, при наведении темно-синие (`#14213d`);
+- все кнопки (`.btn`) — чёрные, при наведении темно-синие (`#14213d`);
 - шапка — чёрная;
-- карточки — светлая рамка, лёгкая тень при hover.
+- карточки — светлая рамка; при наведении подсвечивается рамкой `#14213d` и тенью.
 
-Все стили — в `<style>` блоке [index.html](index.html).
-
-## Структура проекта
-
-```
-├── index.html                          — importmap three.js + стили
-├── main.js                             — точка входа
-├── utils/
-│   ├── merge-throughput.js             — задача 2.11
-│   └── inverse-stages.js               — задача 3.2
-├── components/
-│   ├── product-card/                   — карточка каталога
-│   ├── product/                        — детальный вид товара
-│   ├── back-button/                    — «Назад к каталогу»
-│   ├── button-group/                   — вкладки на странице товара
-│   ├── production-report/              — блок отчёта (обе утилиты + do-while)
-│   └── conveyor-viewer/                — 3D-просмотрщик .glb
-├── pages/
-│   ├── main/index.js                   — каталог + встроенный отчёт
-│   └── product/index.js                — товар + 3D-модель
-└── static/
-    ├── img/{1..4}.png                  — изображения карточек
-    └── models/{1..4}.glb               — 3D-модели (подставляются пользователем)
-```
+Все стили — в [styles.css](styles.css).
 
 ## Запуск
 
 ```bash
-npm install
 python3 -m http.server 8000
 # открыть http://localhost:8000/
 ```
+
+Для стабильной работы открывайте страницу через локальный сервер, а не двойным
+кликом по `index.html` (иначе браузер заблокирует ES-модули и `fetch` .glb).

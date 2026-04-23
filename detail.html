@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подробнее — Конвейер</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+<a class="back-link" href="index.html">← Назад к каталогу</a>
+<div id="viewer-controls">
+    <button class="btn" id="zoom-in">+</button>
+    <button class="btn" id="zoom-out">−</button>
+    <button class="btn" id="view-front">Вид спереди</button>
+    <button class="btn" id="view-back">Сзади</button>
+    <button class="btn" id="view-left">Слева</button>
+    <button class="btn" id="view-right">Справа</button>
+</div>
+<canvas id="viewer-canvas"></canvas>
+<div id="model-title"></div>
+<script src="idb.js"></script>
+<script type="module" src="detail.js"></script>
+</body>
+</html>

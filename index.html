@@ -1,179 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Конвейерное оборудование</title>
-    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <title>Конвейерное оборудование — Галерея</title>
+    <link rel="stylesheet" href="styles.css">
     <script type="importmap">
         {
             "imports": {
                 "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+                "three/examples/jsm/": "https://unpkg.com/three@0.160.0/examples/jsm/"
             }
         }
     </script>
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-        .navbar-custom {
-            background-color: #000000;
-        }
-        .navbar-custom .navbar-brand {
-            color: #ffffff !important;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .page-title {
-            color: #000000;
-        }
-        .card {
-            border: 1px solid #e0e0e0;
-            background: #ffffff;
-            color: #000000;
-            box-shadow: none;
-            transition: box-shadow 0.2s, border-color 0.2s;
-        }
-        .card:hover {
-            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-            border-color: #cfcfcf;
-        }
-        .card-title {
-            color: #000000 !important;
-        }
-        .card-text, .card-text.text-muted {
-            color: #333333 !important;
-        }
-        .btn-primary {
-            background-color: #000000;
-            border-color: #000000;
-            color: #ffffff;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-        .btn-primary:hover,
-        .btn-primary:focus,
-        .btn-primary:active {
-            background-color: #14213d !important;
-            border-color: #14213d !important;
-            color: #ffffff !important;
-        }
-        .btn-outline-primary {
-            color: #000000;
-            border-color: #000000;
-            background-color: transparent;
-        }
-        .btn-outline-primary:hover,
-        .btn-outline-primary:focus,
-        .btn-outline-primary:active {
-            background-color: #14213d !important;
-            border-color: #14213d !important;
-            color: #ffffff !important;
-        }
-        .product-tabs {
-            display: flex;
-            gap: 6px;
-            margin-top: 20px;
-            max-width: 700px;
-            width: 100%;
-        }
-        .product-tabs .tab-btn {
-            padding: 10px 28px;
-            background: #000000;
-            border: 2px solid #000000;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            color: #ffffff;
-            text-align: center;
-            transition: background 0.2s, border-color 0.2s;
-            outline: none;
-        }
-        .product-tabs .tab-btn:hover {
-            background: #14213d;
-            border-color: #14213d;
-        }
-        .product-tabs .tab-btn.active {
-            background: #14213d !important;
-            border-color: #14213d !important;
-            color: #ffffff !important;
-        }
-        .tab-content-panel {
-            max-width: 700px;
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid #e0e0e0;
-            border-top: none;
-            padding: 20px 24px;
-            font-size: 15px;
-            line-height: 1.6;
-            color: #000000;
-        }
-        .production-report {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 24px 28px;
-            border: 1px solid #e0e0e0;
-            background: #ffffff;
-            color: #000000;
-        }
-        .production-report__title {
-            margin-bottom: 16px;
-            color: #000000;
-            font-weight: 600;
-        }
-        .production-report__body {
-            margin: 0;
-            white-space: pre-wrap;
-            font-family: "Courier New", monospace;
-            font-size: 14px;
-            line-height: 1.55;
-            color: #000000;
-            background: #f7f7f7;
-            padding: 14px 18px;
-            border: 1px solid #eaeaea;
-        }
-        .conveyor-viewer {
-            max-width: 700px;
-            width: 100%;
-            margin-top: 8px;
-            margin-bottom: 8px;
-            border: 1px solid #e0e0e0;
-            background: #ffffff;
-            padding: 16px 18px;
-        }
-        .conveyor-viewer__title {
-            font-weight: 600;
-            color: #000000;
-            margin-bottom: 12px;
-        }
-        .conveyor-viewer__canvas {
-            width: 100%;
-            height: 360px;
-            background: #f7f7f7;
-            border: 1px solid #eaeaea;
-        }
-        .conveyor-viewer__canvas canvas {
-            display: block;
-        }
-        .conveyor-viewer__hint {
-            margin-top: 8px;
-            font-size: 13px;
-            color: #555555;
-        }
-    </style>
 </head>
 <body>
-<nav class="navbar navbar-dark navbar-custom mb-4">
-    <div class="container">
-        <a class="navbar-brand mb-0 h1" href="#" id="nav-home" style="text-decoration:none;cursor:pointer;">Конвейерное оборудование</a>
-    </div>
-</nav>
-<div id="root" class="container"></div>
-<script src="main.js" type="module"></script>
-
-<script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<header>
+    <h1>Конвейерное оборудование</h1>
+    <label class="btn" for="uploadModel">Загрузить свою модель (.glb)
+        <input type="file" id="uploadModel" accept=".glb,.gltf" multiple hidden>
+    </label>
+</header>
+<div class="toolbar">
+    <button class="btn" id="reverse-order">Развернуть порядок каталога</button>
+</div>
+<main id="card-list"></main>
+<section class="report">
+    <h2>Отчёт по производственной линии</h2>
+    <pre id="report-body"></pre>
+</section>
+<script src="idb.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>
