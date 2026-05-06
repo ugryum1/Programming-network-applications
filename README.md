@@ -1,158 +1,182 @@
-# Отчёт по ЛР 3. Простое веб-приложение
+# ЛР №5. Добавление AJAX-запросов к API.
 
-**Вариант 7** — тема: конвейеры, компонент: группа кнопок.
+**Цель работы** — научиться взаимодействовать с внешним API из браузера через
+`XMLHttpRequest` (XHR), переключить статическое frontend-приложение из ЛР3 на
+динамическую загрузку данных с бэкенда из ЛР4 и реализовать страницу
+редактирования карточки (вариант 3).
 
-## Навигация по отчёту
+## Содержание
 
-- [Структура проекта](#структура-проекта)
-- [Что сделано](#что-сделано)
-  - [1. Инициализация проекта](#1-инициализация-проекта)
-  - [2. Главная страница (index.html)](#2-главная-страница-indexhtml)
-  - [3. Точка входа (main.js)](#3-точка-входа-mainjs)
-  - [4. Страница каталога (pages/main/index.js)](#4-страница-каталога-pagesmainindexjs)
-  - [5. Компонент карточки (components/product-card/index.js)](#5-компонент-карточки-componentsproduct-cardindexjs)
-  - [6. Страница товара (pages/product/index.js)](#6-страница-товара-pagesproductindexjs)
-  - [7. Группа кнопок — компонент по варианту (components/button-group/index.js)](#7-группа-кнопок--компонент-по-варианту-componentsbutton-groupindexjs)
-  - [8. Навигация между страницами](#8-навигация-между-страницами)
-- [Итог](#итог)
+1. [Структура проекта](#1-структура-проекта)
+2. [Используемые инструменты](#2-используемые-инструменты)
+3. [Слой работы с URL — `modules/stockUrls.js`](#3-слой-работы-с-url)
+4. [Слой работы с API — `modules/ajax.js`](#4-слой-работы-с-api)
+5. [Главная страница со списком карточек](#5-главная-страница-со-списком-карточек)
+6. [Страница карточки и переход к редактированию](#6-страница-карточки)
+7. [Страница редактирования (вариант 3)](#7-страница-редактирования-вариант-3)
+8. [Решение проблемы CORS](#8-решение-проблемы-cors)
+9. [Порядок запуска и демонстрации](#9-порядок-запуска-и-демонстрации)
+10. [Контрольные вопросы](#10-контрольные-вопросы)
 
-## Структура проекта
+## 1. Структура проекта
 
 ```
+├── components
+│   ├── back-button
+│   ├── button-group
+│   ├── product
+│   └── product-card
+├── modules                  ← новый слой ЛР5
+│   ├── ajax.js              ← обёртка над XMLHttpRequest
+│   └── stockUrls.js         ← фабрика URL-ов API
+├── pages
+│   ├── main                 ← список карточек + фильтр
+│   ├── product              ← детальная страница + кнопка "Редактировать"
+│   └── product-edit         ← страница редактирования (новая в ЛР5)
+├── static
 ├── index.html
-├── main.js
-├── pages/
-│   ├── main/index.js        — главная страница (каталог)
-│   └── product/index.js     — страница товара
-├── components/
-│   ├── product-card/index.js — карточка конвейера
-│   ├── product/index.js      — детальный вид конвейера
-│   ├── button-group/index.js — группа кнопок (компонент по варианту)
-│   └── back-button/index.js  — кнопка «Назад»
-├── package.json
-└── .gitignore
+└── main.js
 ```
 
-## Что сделано
+Бэкенд (ЛР4) живёт в отдельной ветке `backend` и слушает `http://localhost:3000`,
+фронтенд (ЛР5) — в этой ветке `ajax` и поднимается через VS Code Live Server
+на отдельном порту (по умолчанию `127.0.0.1:5500`).
 
-### 1. Инициализация проекта
+## 2. Используемые инструменты
 
-Создан npm-проект, установлен Bootstrap:
+- VS Code + расширение Live Server для отдачи статики фронтенда.
+- Node.js + Express в ветке `backend` (поднимается командой `npm run start`).
+- Расширение Chrome [CORS Unblock](https://chromewebstore.google.com/detail/cors-unblock/lfhmikememgdcahcdlaciloancbhjino)
+  для обхода ограничений политики CORS на этапе разработки.
+- Postman — для добавления записей в API и проверки, что фронтенд их видит.
 
-```bash
-npm init
-npm i bootstrap
-```
+## 3. Слой работы с URL
 
-### 2. Главная страница (index.html)
+Чтобы базовый URL не растекался по проекту, все эндпоинты собраны в
+[modules/stockUrls.js](modules/stockUrls.js). Класс `StockUrls` инкапсулирует
+`baseUrl` и предоставляет методы `getStocks(query)`, `getStockById(id)`,
+`createStock()`, `updateStockById(id)` и `removeStockById(id)`.
 
-Подключён Bootstrap, добавлен навбар в индустриальном стиле и кастомные стили:
+`getStocks` поддерживает query-параметры (`URLSearchParams`), что позволяет
+передавать `title=...` для серверной фильтрации.
 
-```html
-<nav class="navbar navbar-dark navbar-custom mb-4">
-    <div class="container">
-        <span class="navbar-brand mb-0 h1">Конвейерное оборудование</span>
-    </div>
-</nav>
-<div id="root" class="container"></div>
-```
+## 4. Слой работы с API
 
-Стили оформлены в промышленной сине-белой гамме (цвета `#1a3a5c`, `#1a6bb5`), карточки с тенью и hover-эффектом.
-
-### 3. Точка входа (main.js)
+[modules/ajax.js](modules/ajax.js) — тонкая обёртка над `XMLHttpRequest`. На
+каждый HTTP-метод (`GET`, `POST`, `PATCH`, `DELETE`) — свой публичный метод; вся
+обработка ответа сосредоточена в приватном `_handleResponse`, который
+безопасно парсит JSON и возвращает результат в коллбэк `(data, status)`.
 
 ```js
-import {MainPage} from "./pages/main/index.js";
-const root = document.getElementById('root');
-const mainPage = new MainPage(root);
-mainPage.render();
+ajax.get(stockUrls.getStocks({title: 'конвейер'}), (data, status) => {
+    console.log(status, data);
+});
 ```
 
-### 4. Страница каталога (pages/main/index.js)
+Для `POST`/`PATCH` заголовок `Content-Type: application/json` выставляется
+автоматически, тело сериализуется через `JSON.stringify`.
 
-Содержит массив из 4 конвейеров и отрисовывает их через `ProductCardComponent`:
+## 5. Главная страница со списком карточек
 
-```js
-getData() {
-    return [
-        { id: 1, src: "...", title: "Ленточный конвейер", text: "..." },
-        { id: 2, src: "...", title: "Роликовый конвейер", text: "..." },
-        { id: 3, src: "...", title: "Цепной конвейер", text: "..." },
-        { id: 4, src: "...", title: "Подвесной конвейер", text: "..." },
-    ]
-}
+[pages/main/index.js](pages/main/index.js) больше не хранит mock-массив —
+данные приходят с бэкенда:
 
-render() {
-    this.parent.innerHTML = ''
-    this.parent.insertAdjacentHTML('beforeend', this.getHTML())
-    this.getData().forEach((item) => {
-        const productCard = new ProductCardComponent(this.pageRoot)
-        productCard.render(item, this.clickCard.bind(this))
-    })
-}
-```
+1. `render()` рисует разметку и поле фильтра, затем вызывает `getData()`.
+2. `getData()` шлёт `GET /stocks` (с `?title=...` если фильтр заполнен) и
+   передаёт ответ в `renderData()`.
+3. `renderData()` для каждого элемента создаёт `ProductCardComponent`. Поле
+   `src` приходит с бэкенда как `/static/img/N.png`, поэтому перед рендером
+   оно префиксуется `http://localhost:3000`, чтобы картинка подгружалась
+   с правильного origin.
+4. По клику на «Найти» / `Enter` идёт повторный запрос с обновлённым
+   query-параметром.
 
-Карточки центрированы с помощью Bootstrap-классов `row justify-content-center g-4`.
+## 6. Страница карточки
 
-### 5. Компонент карточки (components/product-card/index.js)
+[pages/product/index.js](pages/product/index.js) теперь грузит карточку по ID
+через `GET /stocks/:id`. Кроме самой карточки и блока вкладок, на странице
+появляется кнопка **«Редактировать»** — она ведёт на новую страницу
+редактирования.
 
-Адаптивная сетка (`col-md-6 col-lg-3`), одинаковая высота карточек (`h-100`), кнопка «Подробнее» с обработчиком:
+## 7. Страница редактирования (вариант 3)
 
-```js
-getHTML(data) {
-    return `
-        <div class="col-md-6 col-lg-3">
-            <div class="card h-100">
-                <img class="card-img-top" src="${data.src}" ...>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">${data.title}</h5>
-                    <p class="card-text text-muted">${data.text}</p>
-                    <button class="btn btn-primary mt-auto"
-                            id="click-card-${data.id}" data-id="${data.id}">Подробнее</button>
-                </div>
-            </div>
-        </div>`;
-}
-```
+Согласно варианту 3, в ЛР5 нужно подготовить страницу с полями для
+редактирования карточки; PATCH-запрос будет реализован в ЛР6, поэтому
+кнопки «Сохранить» здесь пока нет.
 
-### 6. Страница товара (pages/product/index.js)
+[pages/product-edit/index.js](pages/product-edit/index.js):
 
-При клике на карточку открывается детальная страница с `ProductComponent`, `BackButtonComponent` и `ButtonGroupComponent`:
+- При открытии страница делает `GET /stocks/:id`, чтобы получить актуальные
+  данные карточки.
+- На основе ответа рендерится форма с полями `title`, `text`, `src`,
+  предзаполненными значениями с сервера.
+- Поля редактируемые — пользователь может изменить значения, но кнопки
+  отправки изменений нет (она появится в ЛР6, где будет реализован
+  PATCH-запрос).
+- Кнопка «← Назад» возвращает на детальную страницу карточки.
 
-```js
-render() {
-    this.parent.innerHTML = ''
-    this.parent.insertAdjacentHTML('beforeend', this.getHTML())
+## 8. Решение проблемы CORS
 
-    new BackButtonComponent(this.pageRoot).render(this.clickBack.bind(this))
-    new ProductComponent(this.pageRoot).render(this.getData())
-    new ButtonGroupComponent(this.pageRoot).render()
-}
-```
+Frontend и backend работают на разных портах (`5500` и `3000`), поэтому
+браузер блокирует XHR-запрос с ошибкой
+`Access to XMLHttpRequest ... has been blocked by CORS policy`.
 
-### 7. Группа кнопок — компонент по варианту (components/button-group/index.js)
+В рамках ЛР5 ограничение обходим расширением **CORS Unblock** для Chrome:
+оно подменяет заголовки ответа, добавляя `Access-Control-Allow-Origin: *`.
+В настройках расширения включены:
 
-Реализованы горизонтальные вкладки в стиле conveer.ru с тремя разделами: «О продукте», «Технические характеристики», «Опции». При нажатии на вкладку отображается соответствующий контент:
+- **Overwrite 4xx status codes with 200** — чтобы preflight-запросы `OPTIONS`
+  на сложные `PATCH`/`POST` с `Content-Type: application/json` возвращали
+  валидный для браузера статус.
+- **Access-Control-Request-Headers** — для пропуска кастомных заголовков
+  preflight-запроса.
 
-```js
-getHTML() {
-    const tabs = this.getTabsData();
-    const buttons = tabs.map((tab, i) =>
-        `<button class="tab-btn${i === 0 ? ' active' : ''}" data-tab="${tab.id}">${tab.label}</button>`
-    ).join('');
-    const panels = tabs.map((tab, i) =>
-        `<div class="tab-content-panel" id="tab-panel-${tab.id}" style="${i !== 0 ? 'display:none;' : ''}">${tab.content}</div>`
-    ).join('');
-    return `<div class="product-tabs">${buttons}</div>${panels}`;
-}
-```
+Это решение пригодно только для разработки. В продакшене корректным путём
+является настройка CORS-заголовков на стороне сервера (`cors` middleware
+в Express), либо отдача фронтенда и API с одного origin.
 
-Активная вкладка выделяется синей верхней границей и белым фоном. Переключение реализовано через `addEventListener` на каждой кнопке.
+## 9. Порядок запуска и демонстрации
 
-### 8. Навигация между страницами
+1. В одном терминале переключиться на ветку `backend` и поднять API:
+   `git checkout backend && cd example-express && npm run start` —
+   сервер слушает `http://localhost:3000`.
+2. В другом окне VS Code переключиться на ветку `ajax`
+   (`git checkout ajax`) и запустить Live Server по `index.html` —
+   фронтенд откроется на `http://127.0.0.1:5500`.
+3. Открыть DevTools → вкладка **Network** → фильтр **XHR**.
+4. На главной странице ввести что-нибудь в поле фильтра и нажать «Найти» —
+   при выключенном CORS Unblock в консоли появится ошибка CORS, во вкладке
+   Network запрос будет помечен красным.
+5. Включить расширение **CORS Unblock**, нажать **Restart**, повторить
+   фильтрацию — теперь карточки приходят, а в Network у запроса виден
+   query-параметр `title=...` в заголовках.
+6. В Postman сделать `POST http://localhost:3000/stocks` с телом
+   `{ "src": "/static/img/1.png", "title": "Тестовая запись Postman", "text": "..." }`.
+7. На фронтенде обновить страницу — новая карточка отобразится в общем
+   списке. Ввести её название в поле фильтра — фильтрация подтверждает,
+   что данные действительно идут с бэкенда.
+8. Зайти в карточку, нажать «Редактировать» — откроется форма с полями,
+   заполненными значениями, полученными по `GET /stocks/:id`.
 
-Переход на страницу товара — по клику на кнопку карточки через `addEventListener`. Возврат — через кнопку «Назад к каталогу», которая создаёт новый `MainPage` и вызывает `render()`.
+## 10. Контрольные вопросы
 
-## Итог
+**Что такое AJAX и XHR.** AJAX (Asynchronous JavaScript and XML) — подход,
+позволяющий браузеру обмениваться данными с сервером без перезагрузки
+страницы. `XMLHttpRequest` — низкоуровневый Web API, исторически основной
+инструмент AJAX: создаёт HTTP-запрос, шлёт его асинхронно и через события
+(`readystatechange`, `load`, `error`) сообщает о готовности ответа. Несмотря
+на «XML» в названии, через XHR ходят любые данные — JSON, текст, бинарь,
+form-data. Современная альтернатива — `fetch` + `Promise`/`async-await`.
 
-Реализовано двухстраничное SPA-приложение на тему конвейерного оборудования с использованием vanilla JS (ES6-модули, классы) и Bootstrap 5. Применён компонентный подход: страницы состоят из переиспользуемых компонентов, данные передаются через параметры методов.
+**Проблема CORS и пути её решения.** Same-Origin Policy не пускает
+JS-код одного origin (схема + домен + порт) делать произвольные запросы
+к другому origin. CORS (Cross-Origin Resource Sharing) — механизм, через
+который сервер явно разрешает доступ кросс-доменным клиентам, выставляя
+заголовки `Access-Control-Allow-Origin`, `-Methods`, `-Headers`. Для
+«сложных» запросов (например, `Content-Type: application/json` или
+методы `PATCH`/`PUT`/`DELETE`) браузер сначала шлёт preflight-запрос
+`OPTIONS`. Решения: (1) поднимать фронт и API на одном origin; (2)
+настроить CORS-заголовки на сервере (в Express — `cors` middleware);
+(3) использовать reverse-proxy; (4) на этапе разработки — расширение
+CORS Unblock, подменяющее заголовки ответа в браузере (в продакшене
+неприемлемо, так как обходит встроенную защиту).

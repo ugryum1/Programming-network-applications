@@ -1,47 +1,32 @@
 import {ProductComponent} from "../../components/product/index.js";
 import {BackButtonComponent} from "../../components/back-button/index.js";
 import {MainPage} from "../main/index.js";
-import { ButtonGroupComponent } from "../../components/button-group/index.js";
+import {ButtonGroupComponent} from "../../components/button-group/index.js";
+import {ProductEditPage} from "../product-edit/index.js";
+import {ajax} from "../../modules/ajax.js";
+import {stockUrls} from "../../modules/stockUrls.js";
 
 export class ProductPage {
     constructor(parent, id) {
-        this.parent = parent
-        this.id = id
+        this.parent = parent;
+        this.id = id;
     }
 
     getData() {
-        const data = [
-            {
-                id: 1,
-                src: "static/img/1.png",
-                title: "Ленточный конвейер",
-                text: "Применяется для непрерывной транспортировки сыпучих материалов и штучных грузов. Производительность до 500 т/ч, длина до 300 м."
-            },
-            {
-                id: 2,
-                src: "static/img/2.png",
-                title: "Роликовый конвейер",
-                text: "Предназначен для перемещения тарных и штучных грузов на складах и в логистических центрах. Грузоподъёмность до 1000 кг/м."
-            },
-            {
-                id: 3,
-                src: "static/img/3.png",
-                title: "Цепной конвейер",
-                text: "Обеспечивает надёжную транспортировку тяжёлых изделий в металлургии и машиностроении. Рабочая температура до +500°C."
-            },
-            {
-                id: 4,
-                src: "static/img/4.png",
-                title: "Подвесной конвейер",
-                text: "Экономит производственную площадь за счёт транспортировки в верхней зоне цеха. Грузоподъёмность до 500 кг на подвеску."
+        ajax.get(stockUrls.getStockById(this.id), (data, status) => {
+            if (status >= 200 && status < 300 && data) {
+                this.renderData(data);
+            } else {
+                this.pageRoot.insertAdjacentHTML(
+                    'beforeend',
+                    `<p class="text-danger">Не удалось загрузить карточку (status ${status}).</p>`
+                );
             }
-        ];
-
-        return data.find(item => item.id == this.id)
+        });
     }
 
     get pageRoot() {
-        return document.getElementById('product-page')
+        return document.getElementById('product-page');
     }
 
     getHTML() {
@@ -49,27 +34,50 @@ export class ProductPage {
             `
                 <div id="product-page" class="d-flex flex-column align-items-center"></div>
             `
-        )
+        );
     }
 
     clickBack() {
-        const mainPage = new MainPage(this.parent)
-        mainPage.render()
+        const mainPage = new MainPage(this.parent);
+        mainPage.render();
+    }
+
+    clickEdit() {
+        const editPage = new ProductEditPage(this.parent, this.id);
+        editPage.render();
+    }
+
+    renderData(item) {
+        const normalized = {
+            ...item,
+            src: item.src && item.src.startsWith('/')
+                ? `http://localhost:3000${item.src}`
+                : item.src,
+        };
+
+        const stock = new ProductComponent(this.pageRoot);
+        stock.render(normalized);
+
+        this.pageRoot.insertAdjacentHTML(
+            'beforeend',
+            `<button id="edit-button" class="btn btn-primary mb-3">Редактировать</button>`
+        );
+        document
+            .getElementById('edit-button')
+            .addEventListener('click', this.clickEdit.bind(this));
+
+        const buttonGroup = new ButtonGroupComponent(this.pageRoot);
+        buttonGroup.render();
     }
 
     render() {
-        this.parent.innerHTML = ''
-        const html = this.getHTML()
-        this.parent.insertAdjacentHTML('beforeend', html)
+        this.parent.innerHTML = '';
+        const html = this.getHTML();
+        this.parent.insertAdjacentHTML('beforeend', html);
 
-        const backButton = new BackButtonComponent(this.pageRoot)
-        backButton.render(this.clickBack.bind(this))
+        const backButton = new BackButtonComponent(this.pageRoot);
+        backButton.render(this.clickBack.bind(this));
 
-        const data = this.getData()
-        const stock = new ProductComponent(this.pageRoot)
-        stock.render(data)
-
-        const buttonGroup = new ButtonGroupComponent(this.pageRoot)
-        buttonGroup.render()
+        this.getData();
     }
 }
