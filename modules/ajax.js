@@ -1,52 +1,33 @@
 class Ajax {
     get(url, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url);
-        xhr.send();
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
+        this._send('GET', url, null, callback);
     }
 
     post(url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
+        this._send('POST', url, data, callback);
     }
 
     patch(url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('PATCH', url);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
-
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
+        this._send('PATCH', url, data, callback);
     }
 
     delete(url, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', url);
-        xhr.send();
+        this._send('DELETE', url, null, callback);
+    }
 
-        xhr.onreadystatechange = () => {
-            if (xhr.readyState === 4) {
-                this._handleResponse(xhr, callback);
-            }
-        };
+    _send(method, url, data, callback) {
+        const xhr = new XMLHttpRequest();
+        xhr.open(method, url);
+
+        xhr.onload = () => this._handleResponse(xhr, callback);
+        xhr.onerror = () => callback(null, 0);
+
+        if (data !== null && data !== undefined) {
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(JSON.stringify(data));
+        } else {
+            xhr.send();
+        }
     }
 
     _handleResponse(xhr, callback) {
