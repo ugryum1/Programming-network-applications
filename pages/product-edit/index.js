@@ -9,9 +9,10 @@ export class ProductEditPage {
         this.id = id;
     }
 
-    getData() {
-        ajax.get(stockUrls.getStockById(this.id), (data, status) => {
-            if (status >= 200 && status < 300 && data) {
+    async getData() {
+        try {
+            const {data, status, ok} = await ajax.get(stockUrls.getStockById(this.id));
+            if (ok && data) {
                 this.renderForm(data);
             } else {
                 this.pageRoot.insertAdjacentHTML(
@@ -19,7 +20,12 @@ export class ProductEditPage {
                     `<p class="text-danger">Не удалось загрузить карточку (status ${status}).</p>`
                 );
             }
-        });
+        } catch (err) {
+            this.pageRoot.insertAdjacentHTML(
+                'beforeend',
+                `<p class="text-danger">Сетевая ошибка: ${err.message}</p>`
+            );
+        }
     }
 
     get pageRoot() {
@@ -58,14 +64,45 @@ export class ProductEditPage {
                         <input id="field-src" type="text" class="form-control"
                                value="${this._escape(item.src || '')}">
                     </div>
-                    <p class="text-muted small mb-0">
-                        Кнопка «Сохранить» появится в ЛР6. Поля доступны для ввода данных,
-                        но изменения пока не отправляются.
-                    </p>
+                    <button type="submit" id="save-btn" class="btn btn-primary">Сохранить</button>
+                    <span id="save-status" class="ms-3"></span>
                 </form>
             </div>
         `;
         this.pageRoot.insertAdjacentHTML('beforeend', html);
+
+        document
+            .getElementById('edit-form')
+            .addEventListener('submit', this._onSubmit.bind(this));
+    }
+
+    async _onSubmit(event) {
+        event.preventDefault();
+        const payload = {
+            title: document.getElementById('field-title').value,
+            text: document.getElementById('field-text').value,
+            src: document.getElementById('field-src').value,
+        };
+        const status = document.getElementById('save-status');
+        status.textContent = 'Сохранение…';
+        status.className = 'ms-3 text-muted';
+
+        try {
+            const {ok, status: code} = await ajax.patch(
+                stockUrls.updateStockById(this.id),
+                payload,
+            );
+            if (ok) {
+                status.textContent = 'Сохранено';
+                status.className = 'ms-3 text-success';
+            } else {
+                status.textContent = `Ошибка (${code})`;
+                status.className = 'ms-3 text-danger';
+            }
+        } catch (err) {
+            status.textContent = `Сетевая ошибка: ${err.message}`;
+            status.className = 'ms-3 text-danger';
+        }
     }
 
     _escape(value) {

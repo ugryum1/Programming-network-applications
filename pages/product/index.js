@@ -12,9 +12,10 @@ export class ProductPage {
         this.id = id;
     }
 
-    getData() {
-        ajax.get(stockUrls.getStockById(this.id), (data, status) => {
-            if (status >= 200 && status < 300 && data) {
+    async getData() {
+        try {
+            const {data, status, ok} = await ajax.get(stockUrls.getStockById(this.id));
+            if (ok && data) {
                 this.renderData(data);
             } else {
                 this.pageRoot.insertAdjacentHTML(
@@ -22,7 +23,12 @@ export class ProductPage {
                     `<p class="text-danger">Не удалось загрузить карточку (status ${status}).</p>`
                 );
             }
-        });
+        } catch (err) {
+            this.pageRoot.insertAdjacentHTML(
+                'beforeend',
+                `<p class="text-danger">Сетевая ошибка: ${err.message}</p>`
+            );
+        }
     }
 
     get pageRoot() {
@@ -48,15 +54,8 @@ export class ProductPage {
     }
 
     renderData(item) {
-        const normalized = {
-            ...item,
-            src: item.src && item.src.startsWith('/')
-                ? `http://localhost:3000${item.src}`
-                : item.src,
-        };
-
         const stock = new ProductComponent(this.pageRoot);
-        stock.render(normalized);
+        stock.render(item);
 
         this.pageRoot.insertAdjacentHTML(
             'beforeend',

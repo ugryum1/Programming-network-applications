@@ -1,43 +1,32 @@
 class Ajax {
-    get(url, callback) {
-        this._send('GET', url, null, callback);
+    async get(url) {
+        return this._send('GET', url);
     }
 
-    post(url, data, callback) {
-        this._send('POST', url, data, callback);
+    async post(url, data) {
+        return this._send('POST', url, data);
     }
 
-    patch(url, data, callback) {
-        this._send('PATCH', url, data, callback);
+    async patch(url, data) {
+        return this._send('PATCH', url, data);
     }
 
-    delete(url, callback) {
-        this._send('DELETE', url, null, callback);
+    async delete(url) {
+        return this._send('DELETE', url);
     }
 
-    _send(method, url, data, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open(method, url);
-
-        xhr.onload = () => this._handleResponse(xhr, callback);
-        xhr.onerror = () => callback(null, 0);
-
-        if (data !== null && data !== undefined) {
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(JSON.stringify(data));
-        } else {
-            xhr.send();
+    async _send(method, url, data) {
+        const options = {method, headers: {}};
+        if (data !== undefined && data !== null) {
+            options.headers['Content-Type'] = 'application/json';
+            options.body = JSON.stringify(data);
         }
-    }
 
-    _handleResponse(xhr, callback) {
-        try {
-            const data = xhr.responseText ? JSON.parse(xhr.responseText) : null;
-            callback(data, xhr.status);
-        } catch (e) {
-            console.error('Ошибка парсинга JSON:', e);
-            callback(null, xhr.status);
-        }
+        const response = await fetch(url, options);
+        const text = await response.text();
+        const payload = text ? JSON.parse(text) : null;
+
+        return {data: payload, status: response.status, ok: response.ok};
     }
 }
 

@@ -9,18 +9,18 @@ export class MainPage {
         this.titleQuery = '';
     }
 
-    getData() {
+    async getData() {
         const query = this.titleQuery ? {title: this.titleQuery} : {};
-        ajax.get(stockUrls.getStocks(query), (data, status) => {
-            if (status >= 200 && status < 300 && Array.isArray(data)) {
+        try {
+            const {data, status, ok} = await ajax.get(stockUrls.getStocks(query));
+            if (ok && Array.isArray(data)) {
                 this.renderData(data);
             } else {
-                this.pageRoot.insertAdjacentHTML(
-                    'beforeend',
-                    `<p class="text-danger">Не удалось загрузить данные (status ${status}). Проверьте, что бекенд запущен и CORS Unblock включён.</p>`
-                );
+                this._renderError(`Не удалось загрузить данные (status ${status}).`);
             }
-        });
+        } catch (err) {
+            this._renderError(`Сетевая ошибка: ${err.message}`);
+        }
     }
 
     get pageRoot() {
@@ -57,15 +57,15 @@ export class MainPage {
         }
         items.forEach((item) => {
             const productCard = new ProductCardComponent(this.pageRoot);
-            productCard.render(this._normalize(item), this.clickCard.bind(this));
+            productCard.render(item, this.clickCard.bind(this));
         });
     }
 
-    _normalize(item) {
-        const src = item.src && item.src.startsWith('/')
-            ? `http://localhost:3000${item.src}`
-            : item.src;
-        return {...item, src};
+    _renderError(message) {
+        this.pageRoot.insertAdjacentHTML(
+            'beforeend',
+            `<p class="text-danger">${message}</p>`
+        );
     }
 
     addListeners() {
